@@ -16,8 +16,6 @@ on:
       - master
     paths:
       - '.config'
-  schedule:
-    - cron: 0 8 * * *
   watch:
     types: [started]
 jobs:
@@ -53,7 +51,11 @@ jobs:
       run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
 
     - name: Enable SSR Plus
-      run: cd openwrt && sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
+      run: |
+        cd openwrt
+        sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
+        sed -i '$a\src-git kenzo http\s://github.com/kenzok8/openwrt-package\s' ./feeds.conf.default
+        sed -i '$a\src-git \small http\s://github.com/kenzok8/\small' ./feeds.conf.default
 
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
